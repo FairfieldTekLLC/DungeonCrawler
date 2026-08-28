@@ -136,3 +136,4 @@ The project is complete only when:
 - Multiple dungeon levels exist
 - Save/load works
 - README documentation exists
+- make your str_replace tool call chunk is smaller and ensure you include all required parameters.

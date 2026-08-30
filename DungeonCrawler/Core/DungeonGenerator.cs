@@ -1,106 +1,52 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace DungeonCrawler.Core
 {
     public class Room
     {
-        public Vector2 Position { get; private set; }
-        public Vector2 Size { get; private set; }
-        public bool Connected { get; set; }
+        public Vector2 Position { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public Rectangle Bounds => new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
 
-        public Room(Vector2 position, Vector2 size)
+        public Room(Vector2 position, int width, int height)
         {
             Position = position;
-            Size = size;
-            Connected = false;
+            Width = width;
+            Height = height;
         }
-
-        public Rectangle Bounds => new Rectangle(
-            (int)Position.X,
-            (int)Position.Y,
-            (int)Size.X,
-            (int)Size.Y);
     }
 
     public class DungeonGenerator
     {
-        private readonly int _mapWidth;
-        private readonly int _mapHeight;
+        private readonly Random _random = new();
+        private readonly List<Room> _rooms = new();
+        private readonly int _maxRooms;
         private readonly int _minRoomSize;
         private readonly int _maxRoomSize;
-        private readonly int _maxRooms;
-        private readonly Random _random;
-        private readonly List<Room> _rooms = new();
 
-        public DungeonGenerator(int mapWidth, int mapHeight, int minRoomSize = 4, int maxRoomSize = 10, int maxRooms = 8)
+        public DungeonGenerator(int maxRooms, int minRoomSize, int maxRoomSize)
         {
-            _mapWidth = mapWidth;
-            _mapHeight = mapHeight;
+            _maxRooms = maxRooms;
             _minRoomSize = minRoomSize;
             _maxRoomSize = maxRoomSize;
-            _maxRooms = maxRooms;
-            _random = new Random();
         }
 
         public List<Room> Generate()
         {
-            _rooms.Clear();
-
-            // Place rooms randomly with collision detection
-            int attempts = 0;
-            while (_rooms.Count < _maxRooms && attempts < 100)
+            for (int i = 0; i < _maxRooms; i++)
             {
-                var roomSize = new Vector2(
-                    _random.Next(_minRoomSize, _maxRoomSize + 1),
-                    _random.Next(_minRoomSize, _maxRoomSize + 1));
+                int width = _random.Next(_minRoomSize, _maxRoomSize);
+                int height = _random.Next(_minRoomSize, _maxRoomSize);
+                float x = _random.Next(0, 800 - width);
+                float y = _random.Next(0, 600 - height);
 
-                var roomPosition = new Vector2(
-                    _random.Next(0, _mapWidth - (int)roomSize.X),
-                    _random.Next(0, _mapHeight - (int)roomSize.Y));
-
-                if (!HasCollision(roomPosition, roomSize))
-                {
-                    _rooms.Add(new Room(roomPosition, roomSize));
-                }
-
-                attempts++;
+                var room = new Room(new Vector2(x, y), width, height);
+                _rooms.Add(room);
             }
-
-            // Connect rooms with corridors
-            ConnectRooms();
-
             return _rooms;
-        }
-
-        private bool HasCollision(Vector2 position, Vector2 size)
-        {
-            var newRoom = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
-
-            foreach (var room in _rooms)
-            {
-                if (newRoom.Intersects(room.Bounds))
-                    return true;
-            }
-
-            return false;
-        }
-
-        private void ConnectRooms()
-        {
-            // Simple approach: connect each room to the next one sequentially
-            for (int i = 0; i < _rooms.Count - 1; i++)
-            {
-                var startRoom = _rooms[i];
-                var endRoom = _rooms[i + 1];
-
-                // Mark rooms as connected
-                startRoom.Connected = true;
-                endRoom.Connected = true;
-            }
-
-            if (_rooms.Count > 0)
-                _rooms[_rooms.Count - 1].Connected = true;
         }
 
         public List<Room> GetRooms() => _rooms;

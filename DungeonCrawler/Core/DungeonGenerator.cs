@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
@@ -25,23 +26,27 @@ namespace DungeonCrawler.Core
         private readonly int _maxRooms;
         private readonly int _minRoomSize;
         private readonly int _maxRoomSize;
+        private readonly int _screenWidth;
+        private readonly int _screenHeight;
 
-        public DungeonGenerator(int maxRooms, int minRoomSize, int maxRoomSize)
+        public DungeonGenerator(int maxRooms, int minRoomSize, int maxRoomSize, int screenWidth, int screenHeight)
         {
             _maxRooms = maxRooms;
             _minRoomSize = minRoomSize;
             _maxRoomSize = maxRoomSize;
+            _screenWidth = screenWidth;
+            _screenHeight = screenHeight;
         }
 
         public List<Room> Generate()
         {
+            _rooms.Clear();
             for (int i = 0; i < _maxRooms; i++)
             {
                 int width = _random.Next(_minRoomSize, _maxRoomSize);
                 int height = _random.Next(_minRoomSize, _maxRoomSize);
-                float x = _random.Next(0, 800 - width);
-                float y = _random.Next(0, 600 - height);
-
+                float x = _random.Next(0, _screenWidth - width);
+                float y = _random.Next(0, _screenHeight - height);
                 var room = new Room(new Vector2(x, y), width, height);
                 _rooms.Add(room);
             }

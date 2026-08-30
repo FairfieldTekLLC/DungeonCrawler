@@ -1,6 +1,14 @@
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
+using Microsoft.Xna.Framework;
 
-app.MapGet("/", () => "Hello World!");
-
-app.Run();
+namespace DungeonCrawler
+{
+    public static class Program
+    {
+        [STAThread]
+        private static void Main()
+        {
+            using var game = new Game1();
+            game.Run();
+        }
+    }
+}

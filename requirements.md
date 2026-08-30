@@ -4,13 +4,14 @@ Build a complete dungeon crawler game in C# using MonoGame.
 
 ## Technical Requirements
 
-- C# .NET 9
+- C# .NET 10
 - MonoGame
 - Visual Studio solution
 - Runs on Windows
 - Keyboard controls
 - Graphical display
 - Get real images for the monsters
+- not a web application
 
 ## Game Features
 

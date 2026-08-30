@@ -83,7 +83,7 @@ namespace DungeonCrawler
             }
             
             // Process combat
-            _combatSystem.ProcessCombat(_player, _enemies);
+            _combatSystem.ProcessMeleeCombat(_player, _enemies);
             
             // Check for loot drops from dead enemies
             foreach (var enemy in _enemies)

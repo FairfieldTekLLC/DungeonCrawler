@@ -11,10 +11,16 @@ namespace DungeonCrawler.Entities
         private Vector2 _velocity;
         private KeyboardState _previousState;
 
+        public int Health { get; set; }
+        public int MaxHealth { get; set; }
+        public bool IsAttacking { get; set; }
+
         public override void Initialize()
         {
             base.Initialize();
             _previousState = Keyboard.GetState();
+            Health = 100;
+            MaxHealth = 100;
         }
 
         public override void Update(GameTime gameTime)
@@ -34,8 +40,7 @@ namespace DungeonCrawler.Entities
             var magnitude = _velocity.Length();
             if (magnitude > MovementSpeed)
             {
-                _velocity.Normalize();
-                _velocity *= MovementSpeed;
+                _velocity.Normalize() *= MovementSpeed;
             }
 
             Position += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -49,12 +54,20 @@ namespace DungeonCrawler.Entities
             if (_previousState.IsKeyUp(Keys.D) && keyboardState.IsKeyDown(Keys.D))
                 _velocity.X = 0;
 
+            IsAttacking = keyboardState.IsKeyDown(Keys.Space);
+
             _previousState = keyboardState;
         }
 
         public override void Draw(SpriteBatch spriteBatch, Texture2D texture, Vector2 origin)
         {
             base.Draw(spriteBatch, texture, origin);
+        }
+
+        public void TakeDamage(int amount)
+        {
+            Health -= amount;
+            if (Health <= 0) Health = 0;
         }
     }
 }
